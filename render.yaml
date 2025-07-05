@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: student-assistant-chatbot
+    runtime: python
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate"
+    # Updated startCommand to use gunicorn and assumed manage.py is in the root
+    startCommand: "gunicorn chatbot_project.wsgi:application --bind 0.0.0.0:$PORT"
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: backend.settings
+      # Add this for production, if you set DEBUG based on an env var
+      - key: DJANGO_DEBUG
+        value: "False"
+      # IMPORTANT: Add your OpenRouter API Key here in Render's dashboard as a secret environment variable
+      # - key: OPENROUTER_API_KEY
+      #   value: your_openrouter_api_key_here
